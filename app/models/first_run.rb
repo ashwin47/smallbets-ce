@@ -1,5 +1,5 @@
 class FirstRun
-  ACCOUNT_NAME = "Campfire"
+  ACCOUNT_NAME = BrandingConfig.app_name
   FIRST_ROOM_NAME = "All Talk"
 
   def self.create!(user_params)

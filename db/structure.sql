@@ -55,7 +55,6 @@ CREATE TABLE IF NOT EXISTS "rooms" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("parent_message_id")
   REFERENCES "messages" ("id")
 );
-CREATE INDEX "index_rooms_on_parent_message_id" ON "rooms" ("parent_message_id");
 CREATE TABLE IF NOT EXISTS "bookmarks" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" integer NOT NULL, "message_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "active" boolean DEFAULT 1, CONSTRAINT "fk_rails_c1ff6fa4ac"
 FOREIGN KEY ("user_id")
   REFERENCES "users" ("id")
@@ -140,6 +139,13 @@ FOREIGN KEY ("library_category_id")
 CREATE INDEX "index_library_classes_categories_on_library_class_id" ON "library_classes_categories" ("library_class_id");
 CREATE INDEX "index_library_classes_categories_on_library_category_id" ON "library_classes_categories" ("library_category_id");
 CREATE UNIQUE INDEX "index_library_classes_categories_on_class_and_category" ON "library_classes_categories" ("library_class_id", "library_category_id");
+CREATE TABLE IF NOT EXISTS "library_sessions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "library_class_id" integer NOT NULL, "vimeo_id" varchar NOT NULL, "vimeo_hash" varchar DEFAULT NULL, "padding" decimal(5,2) DEFAULT 56.25 NOT NULL, "quality" varchar DEFAULT NULL, "position" integer DEFAULT 0 NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "description" text NOT NULL, "played_seconds" integer DEFAULT 0 NOT NULL, "last_watched_at" datetime(6), "featured" boolean DEFAULT 0 NOT NULL, "featured_position" integer DEFAULT 0 NOT NULL, CONSTRAINT "fk_rails_dd5ecdc6f9"
+FOREIGN KEY ("library_class_id")
+  REFERENCES "library_classes" ("id")
+);
+CREATE INDEX "index_library_sessions_on_library_class_id" ON "library_sessions" ("library_class_id");
+CREATE INDEX "index_library_sessions_on_vimeo_id" ON "library_sessions" ("vimeo_id");
+CREATE INDEX "index_library_sessions_on_position" ON "library_sessions" ("position");
 CREATE TABLE IF NOT EXISTS "library_watch_histories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "library_session_id" integer NOT NULL, "user_id" integer NOT NULL, "played_seconds" integer DEFAULT 0 NOT NULL, "last_watched_at" datetime(6), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "duration_seconds" integer, "completed" boolean DEFAULT 0 NOT NULL, CONSTRAINT "fk_rails_e5111d59cc"
 FOREIGN KEY ("library_session_id")
   REFERENCES "library_sessions" ("id")
@@ -148,20 +154,15 @@ FOREIGN KEY ("user_id")
   REFERENCES "users" ("id")
 );
 CREATE UNIQUE INDEX "index_library_watch_histories_on_session_and_user" ON "library_watch_histories" ("library_session_id", "user_id");
-CREATE TABLE IF NOT EXISTS "library_sessions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "library_class_id" integer NOT NULL, "vimeo_id" varchar NOT NULL, "vimeo_hash" varchar DEFAULT NULL, "padding" decimal(5,2) DEFAULT 56.25 NOT NULL, "quality" varchar DEFAULT NULL, "position" integer DEFAULT 0 NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "description" text NOT NULL, "played_seconds" integer DEFAULT 0 NOT NULL, "last_watched_at" datetime(6) DEFAULT NULL, "featured" boolean DEFAULT 0 NOT NULL, "featured_position" integer DEFAULT 0 NOT NULL, CONSTRAINT "fk_rails_dd5ecdc6f9"
-FOREIGN KEY ("library_class_id")
-  REFERENCES "library_classes" ("id")
-);
-CREATE INDEX "index_library_sessions_on_library_class_id" ON "library_sessions" ("library_class_id");
-CREATE INDEX "index_library_sessions_on_vimeo_id" ON "library_sessions" ("vimeo_id");
-CREATE INDEX "index_library_sessions_on_position" ON "library_sessions" ("position");
+CREATE INDEX "index_messages_on_room_id_and_mentions_everyone" ON "messages" ("room_id", "mentions_everyone") WHERE mentions_everyone = true;
 CREATE INDEX "index_library_sessions_on_featured" ON "library_sessions" ("featured");
 CREATE INDEX "index_library_sessions_on_featured_position" ON "library_sessions" ("featured_position");
-CREATE INDEX "index_messages_on_room_id_and_mentions_everyone" ON "messages" ("room_id", "mentions_everyone") WHERE mentions_everyone = true;
 CREATE TABLE IF NOT EXISTS "live_events" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar NOT NULL, "url" varchar NOT NULL, "target_time" datetime(6) NOT NULL, "duration_hours" integer DEFAULT 2 NOT NULL, "show_early_hours" integer DEFAULT 24 NOT NULL, "active" boolean DEFAULT 1 NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 CREATE INDEX "index_live_events_on_active" ON "live_events" ("active");
 CREATE INDEX "index_live_events_on_target_time" ON "live_events" ("target_time");
+CREATE UNIQUE INDEX "index_rooms_on_parent_message_id_unique_thread" ON "rooms" ("parent_message_id") WHERE type = 'Rooms::Thread' AND parent_message_id IS NOT NULL;
 INSERT INTO "schema_migrations" (version) VALUES
+('20251103164219'),
 ('20251022001753'),
 ('20251021090000'),
 ('20251021014520'),
@@ -169,7 +170,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20251013024703'),
 ('20251013024645'),
 ('20251013005410'),
-('20251012180000'),
 ('20251011174948'),
 ('20251011174942'),
 ('20251011060050'),

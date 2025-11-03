@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "Small Bets <support@smallbets.com>"
+  default from: -> { BrandingConfig.mailer_from }
   layout "mailer"
 
   helper_method :formatted_time

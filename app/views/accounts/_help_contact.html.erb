@@ -1,10 +1,10 @@
 <% if owner = User.administrator.first %>
   <div class="txt-align-center margin-block-double full-width">
-    <%= link_to "mailto:\"Small Bets Support\" <support@smallbets.com>", class: "btn center", title: "Email Small Bets Support" do %>
+    <%= link_to "mailto:\"#{BrandingConfig.app_name} Support\" <#{BrandingConfig.support_email}>", class: "btn center", title: "Email #{BrandingConfig.app_name} Support" do %>
       <%= image_tag "lifebuoy.svg", aria: { hidden: "true" } %>
-      <span>support@smallbets.com</span>
+      <span><%= BrandingConfig.support_email %></span>
     <% end %>
 
-    <div class="txt-align-center center margin-block txt-subtle">Campfire&trade; version <%= version_badge %></div>
+    <div class="txt-align-center center margin-block txt-subtle"><%= BrandingConfig.app_name %> version <%= version_badge %></div>
   </div>
 <% end %>

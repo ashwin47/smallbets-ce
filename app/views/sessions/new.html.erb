@@ -7,8 +7,8 @@
 
     <div class="flex flex-column gap">
       <fieldset class="flex flex-column gap center-block upad">
-        <legend class="txt-large txt-align-center"><strong>New to Small Bets?</strong></legend>
-        <div class="txt-medium">You can find your invite in your membership email receipt. If you need help finding it, contact support@smallbets.com.</div>
+        <legend class="txt-large txt-align-center"><strong>New to <%= BrandingConfig.app_name %>?</strong></legend>
+        <div class="txt-medium">You can find your invite in your membership email receipt. If you need help finding it, contact <%= BrandingConfig.support_email %>.</div>
       </fieldset>
   
       <%= form_with url: auth_tokens_url, class: "flex flex-column gap", data: { turbo: hotwire_native_app? }, html: { autocomplete: "off" } do |form| %>

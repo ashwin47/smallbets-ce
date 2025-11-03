@@ -1,8 +1,8 @@
-# Small Bets
+# Smallbets Community Edition
 
-[Small Bets](https://smallbets.com) is an online community to support new and aspiring entrepreneurs. This repository contains the source code for the Small Bets web application, which is based on a modified version of [Campfire](https://github.com/basecamp/once-campfire/), a Ruby on Rails chat application built by [37signals](https://once.com/campfire).
+This is a community fork of [Small Bets](https://github.com/antiwork/smallbets) that makes it easy to run your own branded community. All branding (app name, logos, colors, emails) is configurable through environment variables—no code changes required.
 
-We modified Campfire extensively to serve the needs of the Small Bets community. We have a list of [some of the major modifications](campfire-mods.md), along with references to the source code. If you like any of our changes, feel free to incorporate them into your own Campfire instance.
+Small Bets is based on [Campfire](https://github.com/basecamp/once-campfire/), a Ruby on Rails chat application built by [37signals](https://once.com/campfire). See [campfire-mods.md](campfire-mods.md) for a list of modifications.
 
 <img width="1297" height="867" src="https://github.com/user-attachments/assets/a615c6df-1952-49af-872a-793743e6ad6e" />
 
@@ -18,6 +18,20 @@ And if you're not part of the [Small Bets](https://smallbets.com) community yet,
 - Redis server
 - SQLite3
 - Node.js with npm (or bun) for Tailwind CSS builds
+
+### Customizing Branding
+
+To run your own branded community, copy `.env.sample` to `.env` and configure:
+
+```bash
+APP_NAME="Your Community Name"
+APP_HOST="chat.yourdomain.com"
+SUPPORT_EMAIL="support@yourdomain.com"
+MAILER_FROM_NAME="Your Community"
+MAILER_FROM_EMAIL="noreply@yourdomain.com"
+```
+
+See [BRANDING.md](BRANDING.md) for complete customization options.
 
 ### Setup
 

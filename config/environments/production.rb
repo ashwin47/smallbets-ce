@@ -78,5 +78,5 @@ Rails.application.configure do
   config.action_mailer.resend_settings = {
     api_key: ENV['RESEND_API_KEY']
   }
-  config.action_mailer.default_url_options = { host: "smallbets.com", protocol: "https" }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "localhost"), protocol: "https" }
 end

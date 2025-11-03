@@ -34,5 +34,13 @@
 # end
 
 Rails.application.config.content_security_policy do |policy|
-  policy.frame_ancestors "https://smallbets.com", "https://*.smallbets.com", "127.0.0.1:*"
+  app_host = ENV.fetch("APP_HOST", "localhost")
+  frame_ancestors = ["https://#{app_host}", "https://*.#{app_host}", "127.0.0.1:*"]
+
+  # Allow custom frame ancestors from environment variable (comma-separated)
+  if ENV["CSP_FRAME_ANCESTORS"].present?
+    frame_ancestors = ENV["CSP_FRAME_ANCESTORS"].split(",").map(&:strip)
+  end
+
+  policy.frame_ancestors(*frame_ancestors)
 end
