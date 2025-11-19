@@ -76,12 +76,18 @@ module Authentication
 
       Current.user = session.user
       set_authenticated_by(:session)
-      cookies.signed.permanent[:session_token] = { value: session.token,
-                                                   httponly: true,
-                                                   same_site: :lax,
-                                                   secure: Rails.env.production?,
-                                                   domain: ENV["COOKIE_DOMAIN"]
+
+      # Build cookie options with consistent domain scoping (match session_store.rb behavior)
+      cookie_options = {
+        value: session.token,
+        httponly: true,
+        same_site: :lax,
+        secure: Rails.env.production?
       }
+      # Only set domain if COOKIE_DOMAIN is present (avoid nil which causes inconsistent scoping)
+      cookie_options[:domain] = ENV["COOKIE_DOMAIN"] if ENV["COOKIE_DOMAIN"].present?
+
+      cookies.signed.permanent[:session_token] = cookie_options
       request.session[:user_id] = session.user.id
     end
 
@@ -99,7 +105,12 @@ module Authentication
 
     def reset_authentication
       request.session.delete(:user_id)
-      cookies.delete(:session_token, domain: ENV["COOKIE_DOMAIN"])
+      # Only set domain if COOKIE_DOMAIN is present (match session_store.rb behavior)
+      if ENV["COOKIE_DOMAIN"].present?
+        cookies.delete(:session_token, domain: ENV["COOKIE_DOMAIN"])
+      else
+        cookies.delete(:session_token)
+      end
     end
 
     def deny_bots
